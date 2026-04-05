@@ -4,16 +4,22 @@
   --neon-purple: #bc13fe;
   --neon-pink: #ff00ff;
 
-  /* Cyberpunk Dark Theme (Restored) */
+  /* Cyberpunk Dark Theme (With Grid Twist) */
   --bg-dark: #020205;
   --glass-bg: rgba(10, 10, 20, 0.7);
   --glass-border: rgba(255, 255, 255, 0.1);
   --text-main: #e0e0e0;
-  --app-bg-image: radial-gradient(circle at 20% 30%, rgba(0, 243, 255, 0.04) 0%, transparent 50%),
-                  radial-gradient(circle at 80% 70%, rgba(188, 19, 254, 0.04) 0%, transparent 50%),
-                  radial-gradient(circle at 50% 50%, rgba(15, 15, 25, 1) 0%, rgba(5, 5, 10, 1) 100%);
+  
+  --app-bg-image: 
+    linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px),
+    radial-gradient(circle at 20% 30%, rgba(0, 243, 255, 0.04) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(188, 19, 254, 0.04) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(15, 15, 25, 1) 0%, rgba(5, 5, 10, 1) 100%);
+  --bg-size: 30px 30px, 30px 30px, 100% 100%, 100% 100%, 100% 100%;
+  
   --orb-blend: screen;
-  --orb-opacity: 0.4;
+  --orb-opacity: 0.6;
 
   --font-header: 'Orbitron', sans-serif;
   --font-tech: 'Rajdhani', sans-serif;
@@ -25,22 +31,28 @@
 }
 
 body.light-theme {
-  /* Requested: Flat Dark Theme serving as 'Light' Alternative */
-  --neon-cyan: #00f3ff;
-  --neon-purple: #bc13fe;
-  --neon-pink: #ff00ff;
-  --bg-dark: #020205;
-  --glass-bg: rgba(5, 5, 15, 0.45);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --text-main: #e0e0e0;
-  --app-bg-image: none;
-  --orb-blend: normal;
-  --orb-opacity: 0.6;
+  /* Holographic Clean Light Theme */
+  --neon-cyan: #0077ff;
+  --neon-purple: #9d00ff;
+  --neon-pink: #ff00c8;
+  --bg-dark: #f2f7fc;
+  --glass-bg: rgba(255, 255, 255, 0.65);
+  --glass-border: rgba(0, 0, 0, 0.05);
+  --text-main: #111827;
   
-  --cursor-border: rgba(0, 243, 255, 0.6);
-  --cursor-border-hover: rgba(0, 243, 255, 1);
-  --cursor-bg-hover: rgba(0, 243, 255, 0.15);
-  --cursor-glow: rgba(0, 243, 255, 0.4);
+  --app-bg-image: 
+    radial-gradient(circle at 10% 20%, rgba(0, 119, 255, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 90% 80%, rgba(157, 0, 255, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, #ffffff 0%, #f2f7fc 100%);
+  --bg-size: auto;
+  
+  --orb-blend: normal;
+  --orb-opacity: 0.8;
+  
+  --cursor-border: rgba(0, 119, 255, 0.8);
+  --cursor-border-hover: rgba(0, 119, 255, 1);
+  --cursor-bg-hover: rgba(0, 119, 255, 0.15);
+  --cursor-glow: rgba(0, 119, 255, 0.3);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -48,6 +60,7 @@ body.light-theme {
 body {
   background-color: var(--bg-dark);
   background-image: var(--app-bg-image);
+  background-size: var(--bg-size);
   color: var(--text-main);
   font-family: var(--font-tech);
   font-size: 1.1rem;
@@ -661,7 +674,6 @@ body::after {
 .liquid-bg-container {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
   pointer-events: none; z-index: 0;
-  filter: blur(60px) saturate(150%);
   display: flex; align-items: center; justify-content: center;
 }
 .liquid-content-layer {
@@ -672,9 +684,11 @@ body::after {
   mix-blend-mode: var(--orb-blend);
   transition: opacity 0.4s ease;
 }
-.orb-cyan { width: 40vw; height: 40vw; background: var(--neon-cyan); top: 10%; left: 10%; }
-.orb-purple { width: 50vw; height: 50vw; background: var(--neon-purple); bottom: 10%; right: 10%; }
-.orb-dark-accent { width: 35vw; height: 35vw; background: var(--glass-border); top: 40%; left: 30%; opacity: var(--orb-opacity) !important; }
+
+.orb-cyan { background: var(--neon-cyan); }
+.orb-purple { background: var(--neon-purple); }
+.orb-dark-accent { background: var(--glass-border); opacity: var(--orb-opacity) !important; }
+.orb-neon-pink { background: var(--neon-pink); }
 
 /* ========================================= */
 /*          CUSTOM CURSOR                    */
