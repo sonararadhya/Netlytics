@@ -6,8 +6,9 @@
 
   /* Comforting Cyberpunk Dark Theme */
   --bg-dark: #050508;
-  --glass-bg: rgba(12, 12, 18, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.05);
+  --glass-bg: rgba(12, 12, 24, 0.45); /* More translucent for better blur effect */
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-edge: rgba(255, 255, 255, 0.05);
   --text-main: #b8c1ec; /* Muted, readable cyan-grey */
   
   --app-bg-image: 
@@ -34,8 +35,9 @@ body.light-theme {
   --neon-purple: #7c3aed; /* Deep purple */
   --neon-pink: #db2777; /* Deep pink */
   --bg-dark: #f8fafc;
-  --glass-bg: rgba(255, 255, 255, 0.8);
-  --glass-border: rgba(15, 23, 42, 0.1);
+  --glass-bg: rgba(255, 255, 255, 0.4); /* Much more translucent glass */
+  --glass-border: rgba(15, 23, 42, 0.08);
+  --glass-edge: rgba(255, 255, 255, 0.5);
   --text-main: #0f172a; /* High-contrast almost-black text */
   
   --app-bg-image: 
@@ -97,9 +99,12 @@ body::after {
 /*            GLASS PANELS                   */
 /* ========================================= */
 .glass-panel {
-  background: var(--glass-bg); backdrop-filter: blur(40px) saturate(180%);
+  background: var(--glass-bg); backdrop-filter: blur(25px) saturate(180%);
   border: 1px solid var(--glass-border); border-radius: 12px;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 8px 32px rgba(0,0,0,0.6); position: relative;
+  box-shadow: 
+    inset 0 1px 1px var(--glass-edge), 
+    0 10px 40px rgba(0,0,0,0.4); 
+  position: relative;
 }
 .glass-panel-hero {
   background: rgba(5,5,15,0.6); backdrop-filter: blur(50px) saturate(200%);
@@ -322,9 +327,11 @@ body::after {
   padding: 0 16px;
 }
 .navbar-glass {
-  background: rgba(5,5,15,0.5); backdrop-filter: blur(40px) saturate(200%);
-  border: 1px solid rgba(255,255,255,0.1); border-radius: 100px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.15);
+  background: var(--glass-bg); backdrop-filter: blur(30px) saturate(210%);
+  border: 1px solid var(--glass-border); border-radius: 100px;
+  box-shadow: 
+    0 10px 40px rgba(0,0,0,0.3), 
+    inset 0 1px 1px var(--glass-edge);
   transition: all 0.3s ease;
 }
 .navbar-container {
