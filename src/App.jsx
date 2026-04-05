@@ -12,6 +12,8 @@ import Monitor from './components/Monitor';
 import FileMonitor from './components/FileMonitor';
 import Navbar from './components/Navbar';
 import PageWrapper from './components/PageWrapper';
+import CustomCursor from './components/CustomCursor';
+import LiquidBackground from './components/LiquidBackground';
 
 const AnimatedRoutes = ({ session }) => {
   const location = useLocation();
@@ -66,12 +68,15 @@ function App() {
 
   return (
     <Router>
-      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-        {session && <Navbar session={session} />}
-        <main style={{ flex: 1, position: 'relative' }}>
-          <AnimatedRoutes session={session} />
-        </main>
-      </div>
+      <CustomCursor />
+      <LiquidBackground>
+        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+          {session && <Navbar session={session} />}
+          <main style={{ flex: 1, position: 'relative', zIndex: 10 }}>
+            <AnimatedRoutes session={session} />
+          </main>
+        </div>
+      </LiquidBackground>
     </Router>
   );
 }
