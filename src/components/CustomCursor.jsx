@@ -5,7 +5,7 @@ const CustomCursor = () => {
   const [mousePosition, setMousePosition] = useState({ x: -100, y: -100 });
   const [isHovering, setIsHovering] = useState(false);
 
-  // Use springs for smooth following effect
+  // Smooth trailing spring for the outer glass ring
   const springConfig = { damping: 25, stiffness: 300, mass: 0.5 };
   const cursorX = useSpring(-100, springConfig);
   const cursorY = useSpring(-100, springConfig);
@@ -49,34 +49,44 @@ const CustomCursor = () => {
 
   return (
     <div className="custom-cursor-wrapper">
-      {/* Inner precise dot */}
+      {/* Inner Cyberpunk Crosshair */}
       <motion.div
-        className="custom-cursor-dot"
+        className="custom-cursor-crosshair"
         animate={{
-          x: mousePosition.x - 3,
-          y: mousePosition.y - 3,
+          x: mousePosition.x - 8,
+          y: mousePosition.y - 8,
+          rotate: isHovering ? 90 : 0,
+          scale: isHovering ? 0 : 1,
           opacity: isHovering ? 0 : 1
         }}
-        transition={{ type: 'tween', ease: 'backOut', duration: 0.1 }}
-      />
+        transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M8 0V16M0 8H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          <circle cx="8" cy="8" r="2" fill="currentColor" />
+        </svg>
+      </motion.div>
       
-      {/* Outer following ring */}
+      {/* Outer morphing Glass Ring */}
       <motion.div
-        className="custom-cursor-ring"
+        className="custom-cursor-glass-ring"
         style={{
           x: cursorX,
           y: cursorY,
         }}
         animate={{
-          x: cursorX.get() - (isHovering ? 24 : 16),
-          y: cursorY.get() - (isHovering ? 24 : 16),
-          width: isHovering ? 48 : 32,
-          height: isHovering ? 48 : 32,
-          backgroundColor: isHovering ? 'var(--cursor-bg-hover)' : 'transparent',
-          borderColor: isHovering ? 'var(--cursor-border-hover)' : 'var(--cursor-border)',
+          x: cursorX.get() - (isHovering ? 32 : 16),
+          y: cursorY.get() - (isHovering ? 32 : 16),
+          width: isHovering ? 64 : 32,
+          height: isHovering ? 64 : 32,
+          borderRadius: isHovering ? '12px' : '50%',
+          rotate: isHovering ? 45 : 0,
+          backdropFilter: isHovering ? 'blur(6px) brightness(1.3)' : 'blur(0px) brightness(1)',
+          backgroundColor: isHovering ? 'rgba(0, 243, 255, 0.1)' : 'transparent',
+          border: isHovering ? '2px solid rgba(0, 243, 255, 0.8)' : '1px solid rgba(0, 243, 255, 0.5)',
           boxShadow: isHovering 
-            ? '0 0 20px var(--cursor-glow)' 
-            : '0 0 8px var(--cursor-glow)'
+            ? '0 0 25px rgba(0, 243, 255, 0.5), inset 0 0 15px rgba(0, 243, 255, 0.3)' 
+            : '0 0 10px rgba(0, 243, 255, 0.2)'
         }}
       />
     </div>

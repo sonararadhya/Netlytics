@@ -1,13 +1,23 @@
 :root {
+  /* Core Brand Colors */
   --neon-cyan: #00f3ff;
   --neon-purple: #bc13fe;
   --neon-pink: #ff00ff;
+
+  /* Cyberpunk Dark Theme (Restored) */
   --bg-dark: #020205;
-  --glass-bg: rgba(5, 5, 15, 0.45);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-bg: rgba(10, 10, 20, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.1);
   --text-main: #e0e0e0;
+  --app-bg-image: radial-gradient(circle at 20% 30%, rgba(0, 243, 255, 0.04) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 70%, rgba(188, 19, 254, 0.04) 0%, transparent 50%),
+                  radial-gradient(circle at 50% 50%, rgba(15, 15, 25, 1) 0%, rgba(5, 5, 10, 1) 100%);
+  --orb-blend: screen;
+  --orb-opacity: 0.4;
+
   --font-header: 'Orbitron', sans-serif;
   --font-tech: 'Rajdhani', sans-serif;
+  
   --cursor-border: rgba(0, 243, 255, 0.6);
   --cursor-border-hover: rgba(0, 243, 255, 1);
   --cursor-bg-hover: rgba(0, 243, 255, 0.15);
@@ -15,23 +25,29 @@
 }
 
 body.light-theme {
-  --neon-cyan: #0088ff;
-  --neon-purple: #901bb3;
-  --neon-pink: #d300d3;
-  --bg-dark: #f0f4f8;
-  --glass-bg: rgba(255, 255, 255, 0.5);
-  --glass-border: rgba(0, 0, 0, 0.1);
-  --text-main: #1a1a2e;
-  --cursor-border: rgba(0, 136, 255, 0.8);
-  --cursor-border-hover: rgba(0, 136, 255, 1);
-  --cursor-bg-hover: rgba(0, 136, 255, 0.2);
-  --cursor-glow: rgba(0, 136, 255, 0.4);
+  /* Requested: Flat Dark Theme serving as 'Light' Alternative */
+  --neon-cyan: #00f3ff;
+  --neon-purple: #bc13fe;
+  --neon-pink: #ff00ff;
+  --bg-dark: #020205;
+  --glass-bg: rgba(5, 5, 15, 0.45);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --text-main: #e0e0e0;
+  --app-bg-image: none;
+  --orb-blend: normal;
+  --orb-opacity: 0.6;
+  
+  --cursor-border: rgba(0, 243, 255, 0.6);
+  --cursor-border-hover: rgba(0, 243, 255, 1);
+  --cursor-bg-hover: rgba(0, 243, 255, 0.15);
+  --cursor-glow: rgba(0, 243, 255, 0.4);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
   background-color: var(--bg-dark);
+  background-image: var(--app-bg-image);
   color: var(--text-main);
   font-family: var(--font-tech);
   font-size: 1.1rem;
@@ -639,7 +655,7 @@ body::after {
 /*          LIQUID BACKGROUND                */
 /* ========================================= */
 .liquid-wrapper {
-  position: relative; width: 100vw; min-height: 100vh; overflow: hidden; background: var(--bg-dark);
+  position: relative; width: 100vw; min-height: 100vh; overflow: hidden; background: transparent;
   transition: background 0.4s ease;
 }
 .liquid-bg-container {
@@ -652,21 +668,22 @@ body::after {
   position: relative; z-index: 10; width: 100%; min-height: 100vh;
 }
 .liquid-orb {
-  position: absolute; border-radius: 50%; opacity: 0.6;
+  position: absolute; border-radius: 50%; opacity: var(--orb-opacity);
+  mix-blend-mode: var(--orb-blend);
+  transition: opacity 0.4s ease;
 }
 .orb-cyan { width: 40vw; height: 40vw; background: var(--neon-cyan); top: 10%; left: 10%; }
 .orb-purple { width: 50vw; height: 50vw; background: var(--neon-purple); bottom: 10%; right: 10%; }
-.orb-dark-accent { width: 35vw; height: 35vw; background: var(--glass-border); top: 40%; left: 30%; opacity: 0.8 !important; }
+.orb-dark-accent { width: 35vw; height: 35vw; background: var(--glass-border); top: 40%; left: 30%; opacity: var(--orb-opacity) !important; }
 
 /* ========================================= */
 /*          CUSTOM CURSOR                    */
 /* ========================================= */
-.custom-cursor-dot {
-  position: fixed; top: 0; left: 0; width: 6px; height: 6px;
-  background: var(--text-main); border-radius: 50%; pointer-events: none; z-index: 9999;
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+.custom-cursor-crosshair {
+  position: fixed; top: 0; left: 0; width: 16px; height: 16px;
+  color: var(--neon-cyan); pointer-events: none; z-index: 9999;
+  filter: drop-shadow(0 0 8px rgba(0,243,255,0.8));
 }
-.custom-cursor-ring {
-  position: fixed; top: 0; left: 0; border-radius: 50%; pointer-events: none; z-index: 9998;
-  border-style: solid; border-width: 2px;
+.custom-cursor-glass-ring {
+  position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9998;
 }
