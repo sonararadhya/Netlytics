@@ -1,108 +1,92 @@
-import React, { useEffect, useState } from 'react';
-import { motion, useSpring } from 'framer-motion';
-
-const LiquidBlob = ({ colorClass, baseLeft, baseTop, mousePos, index, size }) => {
-  const [orbCenter, setOrbCenter] = useState({ x: 0, y: 0 });
-  
-  // Springs for smooth, liquid-like pushing and reforming. Heavy mass for sluggish fluid resistance
-  const springX = useSpring(0, { damping: 20, stiffness: 50, mass: 3 });
-  const springY = useSpring(0, { damping: 20, stiffness: 50, mass: 3 });
-
-  useEffect(() => {
-    // Initial center calc based on viewport
-    const calculateCenter = () => {
-      setOrbCenter({
-        x: window.innerWidth * (parseFloat(baseLeft) / 100),
-        y: window.innerHeight * (parseFloat(baseTop) / 100)
-      });
-    };
-    calculateCenter();
-    window.addEventListener('resize', calculateCenter);
-    return () => window.removeEventListener('resize', calculateCenter);
-  }, [baseLeft, baseTop]);
-
-  useEffect(() => {
-    if (!mousePos || mousePos.x === -1000) return;
-    
-    // Calculate distance between mouse and this orb's resting center
-    const dx = mousePos.x - orbCenter.x;
-    const dy = mousePos.y - orbCenter.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-    
-    // High threshold to repel early
-    const threshold = 600; 
-    if (distance < threshold) {
-      // Exponential force curve so it pushes harder the closer you get
-      const force = Math.pow((threshold - distance) / threshold, 2.5);
-      const pushX = -(dx / distance) * force * 400; 
-      const pushY = -(dy / distance) * force * 400;
-      
-      springX.set(pushX);
-      springY.set(pushY);
-    } else {
-      // Return to rest smoothly
-      springX.set(0);
-      springY.set(0);
-    }
-  }, [mousePos, orbCenter, springX, springY]);
-
-  // Blobs slowly drift organically
-  return (
-    <motion.div
-      className={`liquid-orb ${colorClass}`}
-      style={{
-        left: baseLeft,
-        top: baseTop,
-        x: springX,
-        y: springY,
-        translateX: '-50%',
-        translateY: '-50%',
-        width: size,
-        height: size,
-      }}
-      animate={{
-        scale: [1, 1.15, 0.9, 1],
-        rotate: [0, 90, 180, 270, 360],
-        borderRadius: ["40% 60% 70% 30%", "50% 50% 40% 60%", "60% 40% 30% 70%", "40% 60% 70% 30%"] // organic amorphous shapes
-      }}
-      transition={{ 
-        duration: 30 + index * 5, 
-        repeat: Infinity, 
-        ease: 'linear' 
-      }}
-    />
-  );
-};
+import React, { useEffect, useRef, useState } from 'react';
 
 const LiquidBackground = ({ children }) => {
-  const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
+  const canvasRef = useRef(null);
+  const ripples = useRef([]);
+  const [windowSize, setWindowSize] = useState({ width: window.innerWidth, height: window.innerHeight });
 
   useEffect(() => {
-    const handleMouseMove = (e) => setMousePos({ x: e.clientX, y: e.clientY });
-    // passive true for performance
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    const handleResize = () => {
+      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  return (
-    <div className="liquid-wrapper">
-      <div className="liquid-bg-container">
-        {/* SVG Liquid Surface Tension Matrix */}
-        <svg style={{ position: 'absolute', width: 0, height: 0 }}>
-          <filter id="liquid-meld">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="35" result="blur" />
-            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 60 -35" />
-          </filter>
-        </svg>
-        
-        <div style={{ width: '100%', height: '100%', position: 'absolute', filter: 'url(#liquid-meld)' }}>
-          <LiquidBlob index={1} colorClass="orb-cyan" baseLeft="20%" baseTop="25%" size="45vw" mousePos={mousePos} />
-          <LiquidBlob index={2} colorClass="orb-purple" baseLeft="80%" baseTop="75%" size="50vw" mousePos={mousePos} />
-          <LiquidBlob index={3} colorClass="orb-dark-accent" baseLeft="55%" baseTop="45%" size="40vw" mousePos={mousePos} />
-          <LiquidBlob index={4} colorClass="orb-neon-pink" baseLeft="30%" baseTop="80%" size="35vw" mousePos={mousePos} />
-        </div>
-      </div>
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let animationFrameId;
 
+    const render = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Update and draw ripples
+      ripples.current = ripples.current.filter(ripple => ripple.v > 0.01);
+      
+      ripples.current.forEach(ripple => {
+        ripple.r += 2; // Expansion speed
+        ripple.v *= 0.96; // Fade speed
+        
+        ctx.beginPath();
+        ctx.arc(ripple.x, ripple.y, ripple.r, 0, Math.PI * 2);
+        
+        // Dynamic color based on theme (read from CSS variable)
+        const accentColor = getComputedStyle(document.body).getPropertyValue('--neon-cyan').trim() || '#00f3ff';
+        
+        ctx.strokeStyle = accentColor;
+        ctx.globalAlpha = ripple.v * 0.3;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        
+        // Add a secondary inner ring for more "liquid" feel
+        if (ripple.r > 20) {
+          ctx.beginPath();
+          ctx.arc(ripple.x, ripple.y, ripple.r - 15, 0, Math.PI * 2);
+          ctx.globalAlpha = ripple.v * 0.15;
+          ctx.stroke();
+        }
+      });
+
+      animationFrameId = requestAnimationFrame(render);
+    };
+
+    render();
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [windowSize]);
+
+  const addRipple = (e) => {
+    const rect = canvasRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    ripples.current.push({ x, y, r: 0, v: 1 });
+  };
+
+  const handleMouseMove = (e) => {
+    // Only add ripple every few pixels to avoid too many
+    const lastRipple = ripples.current[ripples.current.length - 1];
+    if (!lastRipple || Math.hypot(e.clientX - lastRipple.x, e.clientY - lastRipple.y) > 25) {
+      addRipple(e);
+    }
+  };
+
+  return (
+    <div className="liquid-wrapper" onMouseMove={handleMouseMove} onClick={addRipple}>
+      <canvas 
+        ref={canvasRef}
+        width={windowSize.width}
+        height={windowSize.height}
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          pointerEvents: 'none',
+          zIndex: 1,
+          filter: 'blur(2px)' // Soften the ripples
+        }}
+      />
       <div className="liquid-content-layer">
         {children}
       </div>
