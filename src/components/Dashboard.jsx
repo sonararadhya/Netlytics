@@ -5,7 +5,11 @@ import { generatePDFReport } from '../lib/reportGenerator';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar
 } from 'recharts';
+import { motion } from 'framer-motion';
 import { FileDown, TrendingUp, Download, Upload, Database, History, Zap, Trash2, AlertTriangle, FileText } from 'lucide-react';
+
+const containerVariants = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.1 } } };
+const itemVariants = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } } };
 
 const Dashboard = ({ session }) => {
   const [logs, setLogs] = useState([]);
@@ -78,9 +82,9 @@ const Dashboard = ({ session }) => {
   );
 
   return (
-    <div className="container-main" style={{ maxWidth: 1100 }}>
+    <motion.div className="container-main" style={{ maxWidth: 1100 }} variants={containerVariants} initial="hidden" animate="show">
       {/* Header */}
-      <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: 20, marginBottom: 30 }}>
+      <motion.div variants={itemVariants} style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: 20, marginBottom: 30 }}>
         <div>
           <h1 className="neon-text-purple font-orbitron" style={{ fontSize: '1.8rem', letterSpacing: -1 }}>{t('dash.title')}</h1>
           <div className="flex-center font-mono" style={{ gap: 8, fontSize: 10, color: '#555', marginTop: 6, letterSpacing: 4 }}>
@@ -99,7 +103,7 @@ const Dashboard = ({ session }) => {
             <FileDown size={16} /><span>EXPORT_XML</span>
           </button>
         </div>
-      </div>
+      </motion.div>
 
       {/* Delete Confirmation */}
       {confirmDelete && (
@@ -116,7 +120,7 @@ const Dashboard = ({ session }) => {
       )}
 
       {/* Download Timeline */}
-      <div className="glass-panel" style={{ width: '100%', padding: 24, marginBottom: 20, height: 340 }}>
+      <motion.div variants={itemVariants} className="glass-panel" style={{ width: '100%', padding: 24, marginBottom: 20, height: 340 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
           <span className="label-tech" style={{ color: '#888', marginBottom: 0 }}>{t('test.download')} Speed Timeline</span>
           <TrendingUp style={{ color: 'rgba(0,243,255,0.3)' }} />
@@ -131,10 +135,10 @@ const Dashboard = ({ session }) => {
             <Area type="stepAfter" dataKey="download" stroke="#00f3ff" fillOpacity={1} fill="url(#colorDl)" strokeWidth={3} />
           </AreaChart>
         </ResponsiveContainer>
-      </div>
+      </motion.div>
 
       {/* Upload + Data Logs */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, width: '100%' }}>
+      <motion.div variants={itemVariants} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, width: '100%' }}>
         {/* Log Stream */}
         <div className="glass-panel" style={{ height: 360, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
           <div className="flex-center" style={{ padding: '14px 20px', borderBottom: '1px solid rgba(255,255,255,0.06)', justifyContent: 'flex-start', gap: 10 }}>
@@ -190,8 +194,8 @@ const Dashboard = ({ session }) => {
             ))}
           </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 

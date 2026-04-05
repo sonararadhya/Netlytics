@@ -29,7 +29,7 @@ const Register = () => {
   if (success) {
     return (
       <div className="flex-center" style={{ minHeight: '80vh' }}>
-        <div className="glass-panel flex-col-center" style={{ maxWidth: 500, padding: 48, gap: 24, textAlign: 'center' }}>
+        <div className="glass-panel auth-panel flex-col-center" style={{ maxWidth: 500, gap: 24, textAlign: 'center' }}>
           <div style={{ width: 80, height: 80, borderRadius: '50%', background: 'rgba(0,243,255,0.08)', border: '1px solid rgba(0,243,255,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <ShieldCheck className="neon-text-cyan" size={40} />
           </div>
@@ -49,7 +49,7 @@ const Register = () => {
 
   return (
     <div className="flex-center" style={{ minHeight: '80vh' }}>
-      <div className="glass-panel" style={{ width: '100%', maxWidth: 500, padding: 48 }}>
+      <div className="glass-panel auth-panel" style={{ width: '100%', maxWidth: 500 }}>
         <div className="tech-corner tc-tl"></div>
         <div className="tech-corner tc-tr"></div>
         <div className="tech-corner tc-bl"></div>

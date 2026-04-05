@@ -7,7 +7,11 @@ import {
     Bell, Trash2, Download, Upload, Zap, Activity, Bot, Eye, EyeOff, Save
 } from 'lucide-react';
 import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recharts';
+import { motion } from 'framer-motion';
 import Heatmap from './Heatmap';
+
+const containerVariants = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.1 } } };
+const itemVariants = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } } };
 
 const Monitor = ({ session }) => {
     const [analysis, setAnalysis] = useState(null);
@@ -62,9 +66,9 @@ const Monitor = ({ session }) => {
     }));
 
     return (
-        <div className="container-main">
+        <motion.div className="container-main" variants={containerVariants} initial="hidden" animate="show">
             {/* HEADER */}
-            <header className="flex-col-center text-center" style={{ marginBottom: 28, gap: 8 }}>
+            <motion.header variants={itemVariants} className="flex-col-center text-center" style={{ marginBottom: 28, gap: 8 }}>
                 <div className="flex-center" style={{ gap: 12 }}>
                     <div className="header-icon-box" style={{ background: 'rgba(34,197,94,0.1)', borderColor: 'rgba(34,197,94,0.2)' }}>
                         <Shield style={{ color: '#22c55e' }} size={24} />
@@ -74,10 +78,10 @@ const Monitor = ({ session }) => {
                         <span className="header-sub">NETWORK INTELLIGENCE CENTER</span>
                     </div>
                 </div>
-            </header>
+            </motion.header>
 
             {/* HEALTH SCORE + ALERT SUMMARY */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 12, width: '100%', marginBottom: 12 }}>
+            <motion.div variants={itemVariants} style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 12, width: '100%', marginBottom: 12 }}>
                 {/* Health Ring */}
                 <div className="glass-panel-hero flex-col-center" style={{ padding: 28 }}>
                     <div className="monitor-ring" style={{ '--ring-color': scoreColor }}>
@@ -122,10 +126,10 @@ const Monitor = ({ session }) => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </motion.div>
 
             {/* SPEED HISTORY CHART */}
-            <div className="glass-panel" style={{ width: '100%', padding: '16px 20px', marginBottom: 12, height: 200 }}>
+            <motion.div variants={itemVariants} className="glass-panel" style={{ width: '100%', padding: '16px 20px', marginBottom: 12, height: 200 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                     <span className="font-orbitron" style={{ fontSize: 8, letterSpacing: 3, color: '#555' }}>SPEED HISTORY</span>
                     <button onClick={fetchData} className="sched-icon-btn" title="Refresh"><Activity size={12} style={{ color: '#555' }} /></button>
@@ -141,11 +145,11 @@ const Monitor = ({ session }) => {
                         </AreaChart>
                     </ResponsiveContainer>
                 </div>
-            </div>
+            </motion.div>
 
             {/* AI INSIGHTS */}
             {analysis?.insights?.length > 0 && (
-                <div className="ai-panel" style={{ marginBottom: 12 }}>
+                <motion.div variants={itemVariants} className="ai-panel" style={{ marginBottom: 12 }}>
                     <div className="ai-header">
                         <div className="ai-bot-icon"><Bot size={18} style={{ color: '#00f3ff' }} /></div>
                         <div><h3 className="ai-title">AI Network Report</h3><span className="ai-subtitle">Based on {allTests.length} test results</span></div>
@@ -158,16 +162,16 @@ const Monitor = ({ session }) => {
                             </div>
                         ))}
                     </div>
-                </div>
+                </motion.div>
             )}
 
             {/* ISP CONGESTION HEATMAP */}
-            <div style={{ marginBottom: 12 }}>
+            <motion.div variants={itemVariants} style={{ marginBottom: 12 }}>
                 <Heatmap logs={allTests.length > 0 ? [{ tests: allTests }] : []} />
-            </div>
+            </motion.div>
 
             {/* ALERT FEED + SETTINGS */}
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 12, width: '100%', marginBottom: 12 }}>
+            <motion.div variants={itemVariants} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 12, width: '100%', marginBottom: 12 }}>
                 {/* Alert feed */}
                 <div className="glass-panel" style={{ padding: 16, maxHeight: 360, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: 10 }}>
@@ -223,8 +227,8 @@ const Monitor = ({ session }) => {
                         </button>
                     </div>
                 </div>
-            </div>
-        </div>
+            </motion.div>
+        </motion.div>
     );
 };
 

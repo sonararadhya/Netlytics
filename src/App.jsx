@@ -1,14 +1,36 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 import { supabase } from './lib/supabaseClient';
 import Login from './components/Login';
 import Register from './components/Register';
 import Dashboard from './components/Dashboard';
+import ResetPassword from './components/ResetPassword';
 import SpeedTest from './components/SpeedTest';
 import Scheduler from './components/Scheduler';
 import Monitor from './components/Monitor';
 import FileMonitor from './components/FileMonitor';
 import Navbar from './components/Navbar';
+import PageWrapper from './components/PageWrapper';
+
+const AnimatedRoutes = ({ session }) => {
+  const location = useLocation();
+  
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/login" element={!session ? <PageWrapper><Login /></PageWrapper> : <Navigate to="/" />} />
+        <Route path="/register" element={!session ? <PageWrapper><Register /></PageWrapper> : <Navigate to="/" />} />
+        <Route path="/reset-password" element={!session ? <PageWrapper><ResetPassword /></PageWrapper> : <Navigate to="/" />} />
+        <Route path="/" element={session ? <PageWrapper><SpeedTest session={session} /></PageWrapper> : <Navigate to="/login" />} />
+        <Route path="/dashboard" element={session ? <PageWrapper><Dashboard session={session} /></PageWrapper> : <Navigate to="/login" />} />
+        <Route path="/scheduler" element={session ? <PageWrapper><Scheduler session={session} /></PageWrapper> : <Navigate to="/login" />} />
+        <Route path="/monitor" element={session ? <PageWrapper><Monitor session={session} /></PageWrapper> : <Navigate to="/login" />} />
+        <Route path="/file-monitor" element={session ? <PageWrapper><FileMonitor session={session} /></PageWrapper> : <Navigate to="/login" />} />
+      </Routes>
+    </AnimatePresence>
+  );
+};
 
 function App() {
   const [session, setSession] = useState(null);
@@ -46,16 +68,8 @@ function App() {
     <Router>
       <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         {session && <Navbar session={session} />}
-        <main style={{ flex: 1 }}>
-          <Routes>
-            <Route path="/login" element={!session ? <Login /> : <Navigate to="/" />} />
-            <Route path="/register" element={!session ? <Register /> : <Navigate to="/" />} />
-            <Route path="/" element={session ? <SpeedTest session={session} /> : <Navigate to="/login" />} />
-            <Route path="/dashboard" element={session ? <Dashboard session={session} /> : <Navigate to="/login" />} />
-            <Route path="/scheduler" element={session ? <Scheduler session={session} /> : <Navigate to="/login" />} />
-            <Route path="/monitor" element={session ? <Monitor session={session} /> : <Navigate to="/login" />} />
-            <Route path="/file-monitor" element={session ? <FileMonitor session={session} /> : <Navigate to="/login" />} />
-          </Routes>
+        <main style={{ flex: 1, position: 'relative' }}>
+          <AnimatedRoutes session={session} />
         </main>
       </div>
     </Router>

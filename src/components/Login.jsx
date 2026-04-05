@@ -37,7 +37,7 @@ const Login = () => {
   if (showForgot) {
     return (
       <div className="flex-center" style={{minHeight:'80vh'}}>
-        <div className="glass-panel" style={{width:'100%',maxWidth:460,padding:'40px 36px'}}>
+        <div className="glass-panel auth-panel" style={{width:'100%',maxWidth:460}}>
           <div className="tech-corner tc-tl"></div><div className="tech-corner tc-tr"></div>
           <div className="tech-corner tc-bl"></div><div className="tech-corner tc-br"></div>
           <div className="flex-col-center" style={{gap:24,textAlign:'center'}}>
@@ -73,7 +73,7 @@ const Login = () => {
 
   return (
     <div className="flex-center" style={{minHeight:'80vh'}}>
-      <div className="glass-panel" style={{width:'100%',maxWidth:460,padding:'40px 36px'}}>
+      <div className="glass-panel auth-panel" style={{width:'100%',maxWidth:460}}>
         <div className="tech-corner tc-tl"></div><div className="tech-corner tc-tr"></div>
         <div className="tech-corner tc-bl"></div><div className="tech-corner tc-br"></div>
         <div className="flex-col-center" style={{gap:28,textAlign:'center'}}>

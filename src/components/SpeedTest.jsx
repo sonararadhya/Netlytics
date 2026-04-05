@@ -7,6 +7,10 @@ import {
     Globe, BarChart3, ChevronDown, ChevronUp
 } from 'lucide-react';
 import { AreaChart, Area, ResponsiveContainer, YAxis } from 'recharts';
+import { motion } from 'framer-motion';
+
+const containerVariants = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.1 } } };
+const itemVariants = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } } };
 
 const SpeedTest = ({ session }) => {
     const [testing, setTesting] = useState(false);
@@ -107,9 +111,9 @@ const SpeedTest = ({ session }) => {
     const hasResults = results.download>0||results.upload>0||results.ping>0;
 
     return (
-        <div className="container-main">
+        <motion.div className="container-main" variants={containerVariants} initial="hidden" animate="show">
             {/* HEADER */}
-            <header className="flex-col-center text-center" style={{marginBottom:28,gap:6}}>
+            <motion.header variants={itemVariants} className="flex-col-center text-center" style={{marginBottom:28,gap:6}}>
                 <div className="flex-center" style={{gap:12}}>
                     <div className="header-icon-box"><Gauge style={{color:'#00f3ff'}} size={24}/></div>
                     <div style={{textAlign:'left'}}>
@@ -117,22 +121,22 @@ const SpeedTest = ({ session }) => {
                         <span className="header-sub">PRECISION SPEED ANALYSIS V8</span>
                     </div>
                 </div>
-            </header>
+            </motion.header>
 
             {error && <div className="error-panel" style={{marginBottom:16}}><AlertCircle size={14}/><span className="error-text">{error}</span><button onClick={()=>setError(null)}><RefreshCw size={12}/></button></div>}
 
             {/* MODE SELECTOR */}
-            <div className="mode-selector" style={{marginBottom:20}}>
+            <motion.div variants={itemVariants} className="mode-selector" style={{marginBottom:20}}>
                 {Object.entries(TEST_PROFILES).map(([k,p])=>(
                     <button key={k} className={`mode-btn ${testMode===k?'active':''}`} onClick={()=>!testing&&setTestMode(k)} disabled={testing}>
                         <span className="mode-label">{p.label}</span>
                         <span className="mode-duration">{p.duration}</span>
                     </button>
                 ))}
-            </div>
+            </motion.div>
 
             {/* GAUGE */}
-            <div className="glass-panel-hero" style={{width:'100%',padding:'28px 16px 24px',marginBottom:16}}>
+            <motion.div variants={itemVariants} className="glass-panel-hero" style={{width:'100%',padding:'28px 16px 24px',marginBottom:16}}>
                 <div className="tech-corner tc-tl"></div><div className="tech-corner tc-tr"></div>
                 <div className="tech-corner tc-bl"></div><div className="tech-corner tc-br"></div>
                 <div className="phase-strip">
@@ -166,10 +170,10 @@ const SpeedTest = ({ session }) => {
                         <span style={{fontStyle:'italic'}}>{testing?'TESTING':'START TEST'}</span>
                     </button>
                 </div>
-            </div>
+            </motion.div>
 
             {/* LIVE SCOPE */}
-            <div className="glass-panel" style={{width:'100%',padding:'10px 16px',marginBottom:12,height:90}}>
+            <motion.div variants={itemVariants} className="glass-panel" style={{width:'100%',padding:'10px 16px',marginBottom:12,height:90}}>
                 <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:4}}>
                     <div className="flex-center" style={{gap:6}}><Activity size={11} style={{color:pc}}/><span className="font-orbitron" style={{fontSize:8,letterSpacing:2,color:'#555'}}>LIVE SIGNAL</span></div>
                     <span className="font-mono" style={{fontSize:8,color:'#333'}}>{liveData.length} samples</span>
@@ -179,10 +183,10 @@ const SpeedTest = ({ session }) => {
                         <AreaChart data={liveData}><YAxis hide domain={[0,MAX_SPEED]}/><Area type="monotone" dataKey="v" stroke={pc} fillOpacity={0.1} fill={pc} strokeWidth={2} isAnimationActive={false}/></AreaChart>
                     </ResponsiveContainer>
                 </div>
-            </div>
+            </motion.div>
 
             {/* RESULTS */}
-            <div className="results-row">
+            <motion.div variants={itemVariants} className="results-row">
                 <div className="result-card result-dl">
                     <Download size={18} style={{color:'#00f3ff',opacity:0.5}}/>
                     <span className="result-label">Download</span>
@@ -207,10 +211,10 @@ const SpeedTest = ({ session }) => {
                         <span className="result-unit">ms</span>
                     </div>
                 </div>
-            </div>
+            </motion.div>
 
             {/* EXTENDED METRICS */}
-            <div className="metrics-grid">
+            <motion.div variants={itemVariants} className="metrics-grid">
                 <div className="metric-card">
                     <span className="metric-title">Jitter</span>
                     <div className="flex-center" style={{gap:4}}><span className="metric-value">{results.jitter||'—'}</span><span className="metric-unit">ms</span></div>
@@ -231,13 +235,13 @@ const SpeedTest = ({ session }) => {
                     <span className="metric-value" style={{fontSize:11,letterSpacing:0,color:'#aaa',lineHeight:1.3}}>{netInfo?.isp||'—'}</span>
                     <span className="metric-range">{netInfo?.city||''}</span>
                 </div>
-            </div>
+            </motion.div>
 
             {/* AI ANALYSIS */}
             {hasResults && <AiAnalysis results={results} netInfo={netInfo}/>}
 
             {/* SERVER INFO */}
-            <div className="server-panel">
+            <motion.div variants={itemVariants} className="server-panel">
                 <div className="server-header">
                     <Globe size={14} style={{color:'#00f3ff',opacity:0.5}}/>
                     <span className="font-orbitron" style={{fontSize:8,letterSpacing:3,color:'#555'}}>SERVER & NETWORK</span>
@@ -249,16 +253,16 @@ const SpeedTest = ({ session }) => {
                     <div className="server-item"><span className="server-key">Location</span><span className="server-val">{netInfo?`${netInfo.city}, ${netInfo.region}`:'—'}</span></div>
                     <div className="server-item"><span className="server-key">Connected via</span><span className="server-val">{netInfo?.ipVersion||'—'}</span></div>
                 </div>
-            </div>
+            </motion.div>
 
             {/* TEST LOG */}
-            <div className="glass-panel" style={{width:'100%',overflow:'hidden'}}>
+            <motion.div variants={itemVariants} className="glass-panel" style={{width:'100%',overflow:'hidden'}}>
                 <button className="log-toggle" onClick={()=>setShowLog(!showLog)}>
                     <div className="flex-center" style={{gap:6}}><BarChart3 size={12} style={{color:'#555'}}/><span className="font-orbitron" style={{fontSize:8,letterSpacing:2,color:'#555'}}>TEST LOG</span><span className="font-mono" style={{fontSize:8,color:'#333'}}>({testLog.length})</span></div>
                     {showLog?<ChevronUp size={14} style={{color:'#555'}}/>:<ChevronDown size={14} style={{color:'#555'}}/>}
                 </button>
                 {showLog&&<div className="log-body">{testLog.map((e,i)=><div key={i} className="log-entry"><span className="log-time">{e.time}</span><span className="log-msg">{e.msg}</span></div>)}{testLog.length===0&&<div className="log-entry"><span className="log-msg" style={{color:'#333'}}>No data yet.</span></div>}</div>}
-            </div>
+            </motion.div>
 
             {/* FOOTER */}
             <div className="diag-footer">
@@ -266,7 +270,7 @@ const SpeedTest = ({ session }) => {
                 <span className="font-mono" style={{fontSize:8,color:'#333'}}>Database: <b style={{color:diagStatus.db==='OK'?'#22c55e':'#ef4444'}}>{diagStatus.db}</b></span>
                 <span className="font-mono" style={{fontSize:8,color:'#333'}}>Profile: <b style={{color:'#00f3ff'}}>{profile.label}</b></span>
             </div>
-        </div>
+        </motion.div>
     );
 };
 
